@@ -1,5 +1,5 @@
 {
-  "name": "start_backend_node_ts_express",
+  "name": "socket_chat_node",
   "version": "1.0.0",
   "main": "build/app.js",
   "scripts": {
