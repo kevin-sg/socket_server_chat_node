@@ -4,8 +4,9 @@
 
 - Node
 - TypeScript
+- Socket.io
 - Express
-- MongoDB(optional)
+- MongoDB
 
 ## Linting & Formatter
 
@@ -18,7 +19,7 @@ To clone and run this application, you'll need Git and Node.js (which comes with
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/kevin-sg/start_backend_node_ts_express.git
+$ git clone https://github.com/kevin-sg/socket_server_chat_node.git
 
 # Install dependencies
 $ yarn install
