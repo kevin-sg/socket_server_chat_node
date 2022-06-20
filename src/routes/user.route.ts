@@ -1,14 +1,13 @@
-import { check } from "express-validator";
-import { Router, IRouter } from "express";
+import express from "express";
 
-import { dbValidator } from "@/middlewares";
-import { UserController } from "@/controllers";
+import * as Middleware from "@/middlewares";
+import * as Controller from "@/controllers";
 
 class UserRoute {
-  public userRoute: IRouter;
+  public userRoute: express.IRouter;
 
   public constructor() {
-    this.userRoute = Router();
+    this.userRoute = express.Router();
 
     this.routeGet();
     this.routePost();
@@ -16,44 +15,40 @@ class UserRoute {
     this.routeDelete();
   }
 
-  // GET /api/user
+  //* GET /api/v1/user
   private routeGet() {
-    this.userRoute.get("/", UserController.getUser);
+    this.userRoute.get("/", Controller.UserController.getUser);
   }
 
-  // POST /api/user
+  //* POST /api/v1/user
   private routePost() {
     this.userRoute.post(
       "/",
-      [
-        check("name", "The name is required").notEmpty(),
-        check("email", "The email is required").notEmpty(),
-        check("password", "The password is required").notEmpty(),
-        dbValidator,
-      ],
-      UserController.postUser,
+      Middleware.validateFieldOfCreaterUser,
+      Middleware.validateResultField,
+      Controller.UserController.postUser,
     );
   }
 
-  // PUT /api/user/:id
+  //* PUT /api/v1/user/:id
   private routePut() {
     this.userRoute.post(
       "/:id",
       [
-        // validation
+        //* validation
       ],
-      UserController.updateUser,
+      Controller.UserController.updateUser,
     );
   }
 
-  // DELETE /api/user/:id
+  //* DELETE /api/v1/user/:id
   private routeDelete() {
     this.userRoute.post(
       "/:id",
       [
-        // validation
+        //* validation
       ],
-      UserController.deleteUser,
+      Controller.UserController.deleteUser,
     );
   }
 }
