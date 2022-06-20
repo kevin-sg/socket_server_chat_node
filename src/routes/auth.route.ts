@@ -1,8 +1,7 @@
-import { check } from "express-validator";
 import express from "express";
 
-import { dbValidator } from "@/middlewares";
-import { AuthController } from "@/controllers";
+import * as Middleware from "@/middlewares";
+import * as Controller from "@/controllers";
 
 class AuthRoute {
   public authRouter: express.IRouter;
@@ -10,26 +9,23 @@ class AuthRoute {
   public constructor() {
     this.authRouter = express.Router();
 
-    this.routerLoginPost();
-    this.routerRenewPost();
+    this.routerPost();
+    this.routerGet();
   }
 
-  // POST /api/login
-  private routerLoginPost() {
+  //* GET /api/v1/login/renew
+  private routerGet() {
+    this.authRouter.get("/renew", [Middleware.validateJWT], Controller.AuthController.revalidedTokenPost);
+  }
+
+  //* POST /api/v1/login
+  private routerPost() {
     this.authRouter.post(
       "/",
-      [
-        check("email", "The name is required").isEmail(),
-        check("password", "The password is required").notEmpty(),
-        dbValidator,
-      ],
-      AuthController.loginAuth,
+      Middleware.validateFieldOfLogin,
+      Middleware.validateResultField,
+      Controller.AuthController.loginPost,
     );
-  }
-
-  // POST /api/login/renew
-  public routerRenewPost() {
-    this.authRouter.post("/renew", AuthController.revalidedTokenAuth);
   }
 }
 
