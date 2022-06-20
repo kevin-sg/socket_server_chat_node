@@ -1,17 +1,24 @@
-import { Request, Response, NextFunction } from "express";
-import { validationResult } from "express-validator";
+import Validator from "express-validator";
+import bcrypt from "bcryptjs";
 
-import { validationHandler } from "@/utilities";
+import * as Entity from "@/entities";
 
-export function dbValidator(req: Request, res: Response, next: NextFunction) {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json(validationHandler(errors.array(), res.statusCode));
-    }
-    next();
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+export async function isEmailUser(email: string) {
+  const user = await Entity.User.findOne({ email });
+  if (user) {
+    throw new Error("Email is already in use");
   }
+  return true;
+}
+
+export async function isPasswordUser(password: string, { req }: Validator.Meta) {
+  const { email } = req.body;
+  const user = await Entity.User.findOne({ email });
+
+  // Check password
+  const isPasswordValid = await bcrypt.compare(password, user?.password || "");
+  if (!isPasswordValid) {
+    throw new Error("Invalid password");
+  }
+  return true;
 }
